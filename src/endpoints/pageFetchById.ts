@@ -67,30 +67,10 @@ export class PageFetchById extends OpenAPIRoute {
       const pageContentHtml = await fetchPageContentByPageIdHtml(ctx, page.id);
       console.log('pageContentHtml', pageContentHtml);
 
-      return pageContentHtml;
+      return new Response(pageContentHtml, { headers: { 'Content-Type': 'text/html' } });
 
     } catch (error) {
       return handleErrors(error);
     }
   }
-  
 }
-
-// Dummy function to generate HTML response
-async function generateHtmlResponse(page: any): Promise<Response> {
-  const pageContent = JSON.stringify(page, null, 2); // Pretty print the JSON
-  const html = `
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Page Content</title>
-</head>
-<body>
-  <h1>Page Data</h1>
-  <pre><code>${pageContent}</code></pre>
-</body>
-</html>
-  `;
-  return new Response(html, { headers: { 'Content-Type': 'text/html' } });
-}
-
