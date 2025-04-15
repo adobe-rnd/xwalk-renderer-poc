@@ -14,8 +14,7 @@ export function getContentApiContext(env: Bindings, programId: string, envId: st
   const headers: Headers = new Headers();
   if (env.WORKER_ENV === 'local') {
     pagesEndpointUrl = `http://localhost:8787${endpointPagesPath}`;
-    headers['X-CONTENT-API-PROGRAM-ID'] = programId;
-    headers['X-CONTENT-API-ENV-ID'] = envId;
+    headers['X-ADOBE-ROUTING'] = `program=${programId},environment=${envId}`;
   } else {
     pagesEndpointUrl = `https://author-p${programId}-e${envId}.adobeaemcloud.com${endpointPagesPath}`;
   }
