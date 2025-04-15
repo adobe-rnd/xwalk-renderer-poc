@@ -8,16 +8,16 @@ export interface ContentApiContext {
   authToken: string;
 }
 
-export function getContentApiContext(ENVIRONMENT: String, env: Bindings, programId: string, envId: string): ContentApiContext {
+export function getContentApiContext(env: Bindings, programId: string, envId: string): ContentApiContext {
   const endpointPagesPath = '/adobe/experimental/aspm-expires-20251231/pages';
   let pagesEndpointUrl = null;
   const headers: Headers = new Headers();
-  if (ENVIRONMENT === 'production') {
-    pagesEndpointUrl = `https://author-p${programId}-e${envId}.adobeaemcloud.com${endpointPagesPath}`;
-  } else {
+  if (env.WORKER_ENV === 'local') {
     pagesEndpointUrl = `http://localhost:8787${endpointPagesPath}`;
     headers['X-CONTENT-API-PROGRAM-ID'] = programId;
     headers['X-CONTENT-API-ENV-ID'] = envId;
+  } else {
+    pagesEndpointUrl = `https://author-p${programId}-e${envId}.adobeaemcloud.com${endpointPagesPath}`;
   }
   console.log("Headers content:");
   for (const [key, value] of headers.entries()) {

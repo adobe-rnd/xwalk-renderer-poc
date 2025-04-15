@@ -4,7 +4,6 @@ import { PageSchema, ProblemDetailsSchema } from '../schemas';
 import { getContentApiContext } from 'utils/ctx';
 import { fetchPageContentByPageIdHtml, fetchPagesByUrlJson, handleErrors } from 'utils/contentapi-fetch';
 import { Bindings } from 'types';
-import { Context } from 'hono';
 
 export class PageFetchById extends OpenAPIRoute {
   schema = {
@@ -37,7 +36,7 @@ export class PageFetchById extends OpenAPIRoute {
     },
   };
 
-  async handle(c: Context<{ Bindings: Bindings }>) {
+  async handle(c: { env: Bindings, req: Request }) {
     const data = await this.getValidatedData<typeof this.schema>();
     console.log('data', data);
     const { xwalkPageId } = data.params;
@@ -48,7 +47,7 @@ export class PageFetchById extends OpenAPIRoute {
     console.log('envId', envId);
 
     // TODO: The /pages/byUrl endpoint sits in a bucket, it would be better, if the Content API was globally reachable e.g. via https://api.adobeaemcloud.com/adobe/pages/byUrl 
-    const ctx = getContentApiContext(c.env.ENVIRONMENT, c.env, programId, envId);
+    const ctx = getContentApiContext(c.env, programId, envId);
     try {
       const url = c.req.url;
       

@@ -1,0 +1,2 @@
+WORKER_ENV=local
+CONTENT_API_KEY=<set the key>
