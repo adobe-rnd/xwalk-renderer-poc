@@ -15,6 +15,7 @@ const openapi = fromHono(app, {
 //      siteId --------------------------------^
 //      branch -----------------------------------------------------------------^
 //      path (foobar/index.html) --------------------------------------------------------^
+openapi.get("/xwalkpages/:xwalkPageId/:branch/", PageFetchById);
 openapi.get("/xwalkpages/:xwalkPageId/:branch/:path", PageFetchById);
 
 export default app;

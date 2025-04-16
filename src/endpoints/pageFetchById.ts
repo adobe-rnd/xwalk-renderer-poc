@@ -13,7 +13,7 @@ export class PageFetchById extends OpenAPIRoute {
       params: z.object({
         xwalkPageId: Str({ description: 'XwalkPage identifier in the format of programId:envId:siteId. Example: 130360:1272151:1534567d-9937-4e40-85ff-369a8ed45367' }),
         branch: Str({ description: 'branch name e.g. main' }),
-        path: Str({ description: 'path to the page e.g. foobar/index.html' }),
+        path: Str({ description: 'path to the page e.g. foobar/index.html' }).optional(),
       }),
     },
     responses: {
@@ -37,6 +37,7 @@ export class PageFetchById extends OpenAPIRoute {
   };
 
   async handle(c: { env: Bindings, req: Request }) {
+    //console.log('req', c.req);
     const data = await this.getValidatedData<typeof this.schema>();
     console.log('data', data);
     const { xwalkPageId } = data.params;
@@ -49,8 +50,11 @@ export class PageFetchById extends OpenAPIRoute {
     // TODO: The /pages/byUrl endpoint sits in a bucket, it would be better, if the Content API was globally reachable e.g. via https://api.adobeaemcloud.com/adobe/pages/byUrl 
     const ctx = getContentApiContext(c.env, programId, envId);
     try {
-      const url = c.req.url;
-      
+      let url = c.req.url;
+
+      if (url.endsWith('/')) {
+        url = url + 'index';
+      }
       const page = await fetchPagesByUrlJson(ctx, url);
       if (!page) {
         return new Response(
