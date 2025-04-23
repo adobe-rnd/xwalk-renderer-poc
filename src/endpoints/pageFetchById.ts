@@ -54,7 +54,7 @@ export class PageFetchById extends OpenAPIRoute {
         }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
-    
+    }
 
     const [programIdStr, envIdStr, _] = parts;
 
