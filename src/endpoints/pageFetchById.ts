@@ -11,7 +11,7 @@ export class PageFetchById extends OpenAPIRoute {
     summary: 'Get a Page by the XWalkPage ID',
     request: {
       params: z.object({
-        xwalkPageId: Str({ description: 'XwalkPage identifier in the format of p<programId>--e<envId>--siteId. Example: p130360--e1272151--1534567d-9937-4e40-85ff-369a8ed45367' }),
+        xwalkPageId: Str({ description: 'XwalkPage identifier in the format of p<programId>_e<envId>_<siteId>. Example: p130360_e1272151_1534567d-9937-4e40-85ff-369a8ed45367' }),
         branch: Str({ description: 'branch name e.g. main' }),
         path: Str({ description: 'path to the page e.g. foobar/index.html' }).optional(),
       }),
@@ -42,15 +42,15 @@ export class PageFetchById extends OpenAPIRoute {
     console.log('data', data);
     const { xwalkPageId } = data.params;
     
-    // xwalkPageId example: p130360--e1272151--1534567d-9937-4e40-85ff-369a8ed45367
-    const parts = xwalkPageId.split('--');
+    // xwalkPageId example: p130360_e1272151_1534567d-9937-4e40-85ff-369a8ed45367
+    const parts = xwalkPageId.split('_');
     if (parts.length !== 3) {
       // Consider returning a more specific error response, e.g., 400 Bad Request
       return new Response(
         JSON.stringify({
           title: 'Invalid XWalkPage ID format',
           status: 400,
-          detail: `Expected format p<programId>--e<envId>--siteId, but received ${xwalkPageId}.`,
+          detail: `Expected format p<programId>_e<envId>_siteId, but received ${xwalkPageId}.`,
         }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );

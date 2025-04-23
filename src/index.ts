@@ -9,7 +9,7 @@ const openapi = fromHono(app, {
 	docs_url: "/",
 });
 
-// Path example: /xwalkpages/130360:1272151:1534567d-9937-4e40-85ff-369a8ed45367/main/foobar/index.html
+// Path example: /xwalkpages/p130360_1272151_1534567d-9937-4e40-85ff-369a8ed45367/main/foobar/index.html
 //      programId------------^
 //      envId ----------------------^
 //      siteId --------------------------------^
