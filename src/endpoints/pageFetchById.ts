@@ -11,7 +11,7 @@ export class PageFetchById extends OpenAPIRoute {
     summary: 'Get a Page by the XWalkPage ID',
     request: {
       params: z.object({
-        xwalkPageId: Str({ description: 'XwalkPage identifier in the format of programId:envId:siteId. Example: 130360:1272151:1534567d-9937-4e40-85ff-369a8ed45367' }),
+        xwalkPageId: Str({ description: 'XwalkPage identifier in the format of p<programId>--e<envId>--siteId. Example: p130360--e1272151--1534567d-9937-4e40-85ff-369a8ed45367' }),
         branch: Str({ description: 'branch name e.g. main' }),
         path: Str({ description: 'path to the page e.g. foobar/index.html' }).optional(),
       }),
@@ -42,12 +42,40 @@ export class PageFetchById extends OpenAPIRoute {
     console.log('data', data);
     const { xwalkPageId } = data.params;
     
-    // xwalkPageId example: 130360:1272151:1534567d-9937-4e40-85ff-369a8ed45367
-    const [programId, envId, _] = xwalkPageId.split(':');
-    console.log('programId', programId);
-    console.log('envId', envId);
+    // xwalkPageId example: p130360--e1272151--1534567d-9937-4e40-85ff-369a8ed45367
+    const parts = xwalkPageId.split('--');
+    if (parts.length !== 3) {
+      // Consider returning a more specific error response, e.g., 400 Bad Request
+      return new Response(
+        JSON.stringify({
+          title: 'Invalid XWalkPage ID format',
+          status: 400,
+          detail: `Expected format p<programId>--e<envId>--siteId, but received ${xwalkPageId}.`,
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    
 
-    // TODO: The /pages/byUrl endpoint sits in a bucket, it would be better, if the Content API was globally reachable e.g. via https://api.adobeaemcloud.com/adobe/pages/byUrl 
+    const [programIdStr, envIdStr, _] = parts;
+
+    if (!programIdStr.startsWith('p') || !envIdStr.startsWith('e')) {
+        return new Response(
+          JSON.stringify({
+            title: 'Invalid XWalkPage ID format',
+            status: 400,
+            detail: `Program ID should start with 'p' and Environment ID with 'e'. Received: ${xwalkPageId}`,
+          }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+
+    const programId = programIdStr.substring(1);
+    const envId = envIdStr.substring(1);
+
+    console.log('Parsed programId:', programId);
+    console.log('Parsed envId:', envId);
+
+    // TODO: The /pages/byUrl endpoint sits in a bucket, it would be better, if the Content API was globally reachable e.g. via https://api.adobeaemcloud.com/adobe/pages/byUrl
     const ctx = getContentApiContext(c.env, programId, envId);
     try {
       let url = c.req.url;
