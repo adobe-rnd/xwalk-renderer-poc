@@ -4,7 +4,7 @@ import { PageSchema, ProblemDetailsSchema } from '../schemas';
 import { getContentApiContext } from 'utils/ctx';
 import { fetchPageContentByPageIdHtml, fetchPagesByUrlJson, handleErrors } from 'utils/contentapi-fetch';
 import { Bindings } from 'types';
-
+import { extractAuthorizationHeader } from 'utils/request-context';
 export class PageFetchById extends OpenAPIRoute {
   schema = {
     tags: ['Page'],
@@ -76,7 +76,9 @@ export class PageFetchById extends OpenAPIRoute {
     console.log('Parsed envId:', envId);
 
     // TODO: The /pages/byUrl endpoint sits in a bucket, it would be better, if the Content API was globally reachable e.g. via https://api.adobeaemcloud.com/adobe/pages/byUrl
-    const ctx = getContentApiContext(c.env, programId, envId);
+    let authHeader = extractAuthorizationHeader(data.headers);
+    const ctx = getContentApiContext(c.env, programId, envId, authHeader);
+    console.log('ctx', ctx);
     try {
       let url = c.req.url;
 

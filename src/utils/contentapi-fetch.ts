@@ -54,16 +54,18 @@ export async function fetchPagesByUrlJson(
 	ctx: ContentApiContext,
 	urlQuery: string
 ): Promise<Page> {
-	const { pagesEndpointUrl, authToken, headers: ctxHeaders } = ctx;
+	const { pagesEndpointUrl, authHeader, headers: ctxHeaders } = ctx;
 
 	const headers: HeadersInit = {
 		'Accept': 'application/json',
 		...(ctxHeaders || {}),
 	};
-	if (authToken) {
-		headers['Authorization'] = `Bearer ${authToken}`;
+	if (authHeader) {
+		headers['Authorization'] = authHeader;
 	}
 
+	console.log('pagesEndpointUrl', pagesEndpointUrl);	
+	console.log('headers', headers);
 	const url = new URL(`${pagesEndpointUrl}/byUrl?url=${urlQuery}`, `${pagesEndpointUrl}`);
 	console.log(`Fetching from: ${url}`);
 	try {
@@ -107,14 +109,14 @@ export async function fetchPageContentByPageIdHtml(
 	ctx: ContentApiContext,
 	pageId: string
 ): Promise<string> {
-	const { pagesEndpointUrl, authToken, headers: ctxHeaders } = ctx;
+	const { pagesEndpointUrl, authHeader, headers: ctxHeaders } = ctx;
 
 	const headers: HeadersInit = {
 		'Accept': 'application/json',
 		...(ctxHeaders || {}),
 	};
-	if (authToken) {
-		headers['Authorization'] = `Bearer ${authToken}`;
+	if (authHeader) {
+		headers['Authorization'] = authHeader;
 	}
 
 	const url = new URL(`${pagesEndpointUrl}/${pageId}/content`, pagesEndpointUrl);
