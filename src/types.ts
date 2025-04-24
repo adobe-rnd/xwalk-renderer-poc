@@ -1,4 +1,4 @@
 export type Bindings = {
   WORKER_ENV: string
-  CONTENT_API_KEY: string
+  AEM_AUTH_TOKEN: string
 }

@@ -26,6 +26,6 @@ export function getContentApiContext(env: Bindings, programId: string, envId: st
   return {
     pagesEndpointUrl: pagesEndpointUrl,
     headers: headers,
-    authToken: env.CONTENT_API_KEY,
+    authToken: env.AEM_AUTH_TOKEN,
   };
 }
