@@ -5,10 +5,10 @@ import { Bindings } from "types";
 export interface ContentApiContext {
   pagesEndpointUrl: string;
   headers: Headers;
-  authToken: string;
+  authHeader: string;
 }
 
-export function getContentApiContext(env: Bindings, programId: string, envId: string): ContentApiContext {
+export function getContentApiContext(env: Bindings, programId: string, envId: string, authHeader: string | null): ContentApiContext {
   let pagesEndpointUrl = null;
   const headers: Headers = new Headers();
   if (env.WORKER_ENV === 'local') {
@@ -26,6 +26,7 @@ export function getContentApiContext(env: Bindings, programId: string, envId: st
   return {
     pagesEndpointUrl: pagesEndpointUrl,
     headers: headers,
-    authToken: env.AEM_AUTH_TOKEN,
+    authHeader: authHeader ? authHeader : `Bearer ${env.AEM_AUTH_TOKEN}`
   };
 }
+
