@@ -15,6 +15,9 @@ export class PageFetchById extends OpenAPIRoute {
         branch: Str({ description: 'branch name e.g. main' }),
         path: Str({ description: 'path to the page e.g. foobar/index.html' }).optional(),
       }),
+      headers: z.object({
+        'AUTHORIZATION': z.string().describe('Authorization header'),
+      }),
     },
     responses: {
       '200': {
@@ -78,7 +81,6 @@ export class PageFetchById extends OpenAPIRoute {
     // TODO: The /pages/byUrl endpoint sits in a bucket, it would be better, if the Content API was globally reachable e.g. via https://api.adobeaemcloud.com/adobe/pages/byUrl
     let authHeader = extractAuthorizationHeader(data.headers);
     const ctx = getContentApiContext(c.env, programId, envId, authHeader);
-    console.log('ctx', ctx);
     try {
       let url = c.req.url;
 
